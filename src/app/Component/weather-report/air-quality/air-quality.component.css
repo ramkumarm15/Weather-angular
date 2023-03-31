@@ -1,0 +1,19 @@
+.GoodIndexLevel {
+  color: #20c997;
+}
+
+.ModerateIndexLevel {
+  color: #ffc107;
+}
+
+.UnHealthyIndexLevel {
+  color: #fd7e14;
+}
+
+.VeryUnhealthyIndexLevel {
+  color: #6f42c1;
+}
+
+.HazardousIndexLevel {
+  color: #ec0000;
+}

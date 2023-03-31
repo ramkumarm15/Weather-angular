@@ -1,0 +1,130 @@
+.reportCard {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  min-height: 12rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.reportCard hr {
+  height: 1px;
+  opacity: 1;
+  width: 100%;
+}
+
+.forecastReport {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.forecastCard {
+  background-color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 12rem;
+  height: 16rem;
+  margin: 1rem 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+@media screen and (max-width: 992px) {
+  .forecastReport {
+    padding: 0 1rem;
+  }
+
+  .forecastCard {
+    width: 9rem;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: none;
+    border-radius: 6px;
+  }
+
+  .forecastCard h5 {
+    font-size: 1rem;
+  }
+
+  .forecastCard img {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.forecastCard.active {
+  background-color: #6366f1;
+  color: #fff;
+}
+
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  background: url("^assets/Compass.png") no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.daycity {
+  background-image: url("^./assets/day-city.jpg");
+}
+
+.nightcity {
+  background-image: url("^./assets/night-city.jpg");
+}
+
+.daycity,
+.nightcity {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+}
+
+.daycity::before,
+.nightcity::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  overflow-y: hidden;
+}
+
+.daycity h6 {
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.5rem;
+  z-index: 2;
+}
+
+.unitChange {
+  float: right;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unitChange button {
+  background-color: #fff;
+  border-radius: 50%;
+  margin: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: 0.2s all ease-in;
+}
+
+.unitChange button.selected {
+  background: #0b0f19;
+  color: #fff;
+}

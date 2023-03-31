@@ -1,0 +1,61 @@
+<section class="weather">
+  <div class="container">
+    <div class="row pt-5">
+      <div class="col-md-12 d-flex align-items-center justify-content-between">
+        <h3 class="fw-bolder">Weather Report</h3>
+
+        <div class="d-flex align-items-center justify-content-between float-end">
+          <div class="input-group">
+            <input
+              type="text"
+              name="city"
+              id="city"
+              class="form-control"
+              placeholder="Enter city name"
+              [(ngModel)]="cityName"
+            />
+            <span class="input-group-text" (click)="onClick()">
+              <i class="fa-solid fa-caret-right"></i>
+            </span>
+          </div>
+
+          <button class="btn currentLoc" (click)="getLocation()">
+            <i class="fa-solid fa-location-crosshairs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<ng-container *ngIf="!loadData; else loading">
+  <app-weather-report
+    *ngIf="currentData && location && forecastData && astro; else errorHandler"
+    [report]="currentData"
+    [forecast]="forecastData"
+    [location]="location"
+    [astro]="astro"
+  ></app-weather-report>
+</ng-container>
+<ng-template #loading>
+  <div class="container">
+    <div class="row min-vh-80 justify-content-center align-items-center">
+      <div class="col-lg-6 d-flex justify-content-center align-items-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #errorHandler>
+  <div class="container mt-4">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-lg-6">
+        <div class="alert alert-danger" role="alert">
+          <div>Data can't be fetched. please try again later</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

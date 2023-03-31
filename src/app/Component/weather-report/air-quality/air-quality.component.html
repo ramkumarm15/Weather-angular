@@ -1,0 +1,32 @@
+<h6 class="text-grey font-weight-normal mt-0">
+  Air Quality Index
+  <span
+    class="float-end fs-6"
+    placement="top"
+    ngbTooltip="AQI value based in US EPA Standard"
+    ><i class="fa-solid fa-circle-info"></i
+  ></span>
+</h6>
+<div
+  class="d-flex flex-wrap justify-content-evenly justify-content-lg-between align-items-center mt-3"
+>
+  <ng-container *ngFor="let data of aqiData">
+    <h6
+      class="d-flex justify-content-between align-items-center flex-column text-center text-wrap mx-2 mx-lg-0 mt-3"
+      [ngClass]="
+        getIndexLevel(data.indexName, airQuality[data.indexName]) + 'IndexLevel'
+      "
+      [style.width]="'4rem'"
+    >
+      <span class="mb-2">
+        {{ data.name }}<sub>{{ data.subStr }}</sub>
+      </span>
+      <span class="mb-2">{{ airQuality[data.indexName] | number }}</span>
+      <span class="mb-2">
+        {{
+          getIndexLevel(data.indexName, airQuality[data.indexName]) | titlecase
+        }}
+      </span>
+    </h6>
+  </ng-container>
+</div>
