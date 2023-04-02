@@ -4,7 +4,9 @@
       <div class="col-md-12 d-flex align-items-center justify-content-between">
         <h3 class="fw-bolder">Weather Report</h3>
 
-        <div class="d-flex align-items-center justify-content-between float-end">
+        <div
+          class="d-flex align-items-center justify-content-between float-end"
+        >
           <div class="input-group">
             <input
               type="text"
@@ -29,7 +31,13 @@
 </section>
 <ng-container *ngIf="!loadData; else loading">
   <app-weather-report
-    *ngIf="currentData && location && forecastData && astro; else errorHandler"
+    *ngIf="
+      (currentData | json) != '{}' &&
+        (location | json) != '{}' &&
+        (forecastData | json) != '{}' &&
+        (astro | json) != '{}';
+      else errorHandler
+    "
     [report]="currentData"
     [forecast]="forecastData"
     [location]="location"
@@ -53,7 +61,10 @@
     <div class="row justify-content-center align-items-center">
       <div class="col-lg-6">
         <div class="alert alert-danger" role="alert">
-          <div>Data can't be fetched. please try again later</div>
+          <div>
+            Data can't be fetched. please check your internet and try again
+            later
+          </div>
         </div>
       </div>
     </div>

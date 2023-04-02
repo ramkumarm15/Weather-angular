@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { fromEvent, map, merge, Observable, of, Subscription } from 'rxjs';
 import { Forecast } from 'src/app/Model/forecast';
 import {
   Astro,
@@ -15,8 +16,33 @@ import { WeatherService } from 'src/app/Service/weather.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
-  constructor(private service: WeatherService) {}
+export class HomeComponent implements OnInit, OnDestroy {
+  onlineEvent!: Observable<Event>;
+  offlineEvent!: Observable<Event>;
+  subscriptions: Subscription[] = [];
+
+  constructor(private service: WeatherService) {
+    this.onlineEvent = fromEvent(window, 'online');
+    this.offlineEvent = fromEvent(window, 'offline');
+
+    this.subscriptions.push(
+      this.onlineEvent.subscribe((e) => {
+        console.log('Online...');
+        this.getLocation();
+      })
+    );
+
+    this.subscriptions.push(
+      this.offlineEvent.subscribe((e) => {
+        console.log('Offline...');
+        this.loadData = false;
+        this.astro = {} as Astro;
+        this.currentData = {} as Current;
+        this.forecastData = {} as Forecast;
+        this.location = {} as Location;
+      })
+    );
+  }
 
   ngOnInit(): void {
     this.getLocation();
@@ -24,10 +50,10 @@ export class HomeComponent implements OnInit {
 
   loadData: boolean = true;
 
-  astro!: Astro;
-  currentData!: Current;
-  forecastData!: Forecast;
-  location!: Location;
+  astro = {} as Astro;
+  currentData = {} as Current;
+  forecastData = {} as Forecast;
+  location = {} as Location;
   cityName: string = '';
 
   onClick(): void {
@@ -57,12 +83,14 @@ export class HomeComponent implements OnInit {
   getLocation() {
     if (!navigator.onLine) {
       window.alert('Connect to internet');
+      this.loadData = false;
     }
     if (navigator.geolocation) {
+      console.log(navigator.geolocation);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-
+          console.log(position.coords);
           this.getWeatherByOpenApi(latitude, longitude);
           this.getGeoLocationData(latitude, longitude);
         },
@@ -108,5 +136,9 @@ export class HomeComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 }
