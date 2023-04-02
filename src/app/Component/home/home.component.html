@@ -2,10 +2,10 @@
   <div class="container">
     <div class="row pt-5">
       <div class="col-md-12 d-flex align-items-center justify-content-between">
-        <h3 class="fw-bolder">Weather Report</h3>
+        <h3 class="d-none d-lg-block  fw-bolder">Weather Report</h3>
 
         <div
-          class="d-flex align-items-center justify-content-between float-end"
+          class="d-flex align-items-center justify-content-between cityInput float-end"
         >
           <div class="input-group">
             <input
@@ -21,9 +21,9 @@
             </span>
           </div>
 
-          <button class="btn currentLoc" (click)="getLocation()">
+          <a role="button" class="btn currentLoc" (click)="getLocation()">
             <i class="fa-solid fa-location-crosshairs"></i>
-          </button>
+          </a>
         </div>
       </div>
     </div>

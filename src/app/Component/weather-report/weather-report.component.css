@@ -12,10 +12,21 @@
   width: 100%;
 }
 
-.forecastReport {
+.forecastHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.forecastHead h3 {
+  font-size: 2rem;
+}
+
+.forecastReport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
 }
 
@@ -25,19 +36,23 @@
   border-radius: 8px;
   width: 12rem;
   height: 16rem;
-  margin: 1rem 1rem;
+  margin: 1rem 0rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 @media screen and (max-width: 992px) {
   .forecastReport {
     padding: 0 1rem;
+    justify-content: center;
   }
 
   .forecastCard {
-    width: 9rem;
-    margin: 0;
+    width: 100%;
+    /* padding: 1rem; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,7 +114,8 @@
   overflow-y: hidden;
 }
 
-.daycity h6 {
+.daycity h6,
+.nightcity h6 {
   color: #fff;
   font-weight: 900;
   font-size: 1.5rem;
@@ -127,4 +143,10 @@
 .unitChange button.selected {
   background: #0b0f19;
   color: #fff;
+}
+
+@media screen and (max-width: 992px) {
+  .forecastHead h3 {
+    font-size: 1rem;
+  }
 }
