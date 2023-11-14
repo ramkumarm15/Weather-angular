@@ -7,17 +7,12 @@
 }
 
 .currentLoc {
-  background-color: #0b0f19;
-  border-radius: 50%;
   margin: 0 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: 0.2s all ease-in;
-  width: 2rem;
-  height: 2rem;
-  color: #fff;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 @media screen and (max-width:992px) {
@@ -25,4 +20,9 @@
     width: 100%;
     float: none;
   }
+}
+
+.spinner-border{
+  border: 0.15em solid #ffffff;
+  border-right-color: rgba(0, 0, 0, 0);
 }

@@ -194,4 +194,12 @@ export interface Location {
   tz_id: string;
   localtime_epoch: number;
   localtime: string;
+  added: boolean;
+}
+
+export interface CityDetail {
+  added: boolean;
+  name: string;
+  lat: number;
+  lon: number;
 }

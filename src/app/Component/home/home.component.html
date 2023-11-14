@@ -1,12 +1,13 @@
 <section class="weather">
   <div class="container">
     <div class="row pt-5">
-      <div class="col-md-12 d-flex align-items-center justify-content-between">
-        <h3 class="d-none d-lg-block  fw-bolder">Weather Report</h3>
-
-        <div
-          class="d-flex align-items-center justify-content-between cityInput float-end"
-        >
+      <div class="col-md-4">
+        <app-cities [cityDetails]="cityDetails"></app-cities>
+      </div>
+      <div
+        class="col-md-5 offset-md-3 d-flex align-items-center justify-content-lg-end justify-content-between mt-3 mt-md-0"
+      >
+        <form (ngSubmit)="searchCity()" ngNativeValidate>
           <div class="input-group">
             <input
               type="text"
@@ -15,33 +16,36 @@
               class="form-control"
               placeholder="Enter city name"
               [(ngModel)]="cityName"
+              required
             />
-            <span class="input-group-text" (click)="onClick()">
-              <i class="fa-solid fa-caret-right"></i>
-            </span>
+            <button
+              type="submit"
+              class="input-group-text"
+              [ngStyle]="{ cursor: 'pointer' }"
+            >
+              <i class="bx bx-search-alt"></i>
+            </button>
           </div>
+        </form>
 
-          <a role="button" class="btn currentLoc" (click)="getLocation()">
-            <i class="fa-solid fa-location-crosshairs"></i>
-          </a>
-        </div>
+        <a
+          role="button"
+          class="btn btn-dark btn-icon rounded-circle currentLoc"
+          (click)="getLocation()"
+        >
+          <i class="bx bx-target-lock"></i>
+        </a>
       </div>
     </div>
   </div>
 </section>
 <ng-container *ngIf="!loadData; else loading">
   <app-weather-report
-    *ngIf="
-      (currentData | json) != '{}' &&
-        (location | json) != '{}' &&
-        (forecastData | json) != '{}' &&
-        (astro | json) != '{}';
-      else errorHandler
-    "
     [report]="currentData"
     [forecast]="forecastData"
     [location]="location"
     [astro]="astro"
+    [cityDetail]="cityDetail"
   ></app-weather-report>
 </ng-container>
 <ng-template #loading>

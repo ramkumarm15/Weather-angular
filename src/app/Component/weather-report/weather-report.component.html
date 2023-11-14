@@ -1,18 +1,283 @@
 <div class="container pt-4">
   <div class="row">
-    <div class="col-lg-12 forecastHead">
-      <h3 class="card-title fw-bolder">5-day Forecast</h3>
+    <ng-container>
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-3 my-3">
+            <!-- <h3 class="fw-bolder mb-4">Today</h3> -->
+            <h4 class=>
+              {{ location.localtime | date : "EEEE" }}, {{ " " }}
+              {{ location.localtime | date : "shortTime" }}
+            </h4>
+          </div>
+          <div class="col-lg-4 my-3">
+            <button class="btn btn-info">Hourly Forecast</button>
+          </div>
+          <div class="col-lg-12">
+            <div class="row mb-3">
+              <div class="col-lg-3 py-2">
+                <div class="card reportCard">
+                  <div class="card-body">
+                    <div
+                      class="d-flex justify-content-center align-items-center flex-column"
+                    >
+                      <h4>
+                        {{ location.name }}
+                        <!-- <ng-container *ngIf="(cityDetail | json) === '{}'"> -->
+                        <span
+                          role="button"
+                          class="text-primary rounded-circle p-0 fs-5"
+                          *ngIf="!cityDetail.added"
+                          (click)="addCity()"
+                        >
+                          <i class="bx bx-plus fs-4"> </i>
+                        </span>
+                        <span
+                          role="button"
+                          class="text-success rounded-circle p-0 fs-5"
+                          *ngIf="cityDetail.added"
+                          (click)="removeCity()"
+                        >
+                          <i class="bx bx-check-circle fs-4"> </i>
+                        </span>
+                        <!-- </ng-container> -->
+                      </h4>
+                      <img
+                        src="http:{{ report.condition.icon }}"
+                        width="64"
+                        height="64"
+                        [alt]="report.condition.text"
+                      />
+                      <h4 class="fw-bolder mt-0" *ngIf="tempUnitType == 'F'">
+                        {{ report.temp_f }} &#8457;
+                      </h4>
+                      <h4 class="fw-bolder mb-3" *ngIf="tempUnitType == 'C'">
+                        {{ convertToCelcius(report.temp_f) | number : "0.0-0" }}
+                        &#8451;
+                      </h4>
+                      <!-- <hr class="border-top text-dark" /> -->
+                    </div>
+                    <div
+                      class="d-flex justify-content-center align-items-center flex-row mt-3"
+                    >
+                      <img
+                        src="http:{{ report.condition.icon }}"
+                        width="20"
+                        height="20"
+                        [alt]="report.condition.text"
+                      />
+                      <p class="m-0 fs-6 ms-1">{{ report.condition.text }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-9 py-2">
+                <div class="row">
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Feels Like C</h6>
+                        <h3 class="fw-bolder m-0">
+                          {{ report.feelslike_c }} %
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Humidity</h6>
+                        <h3 class="fw-bolder m-0">{{ report.humidity }} %</h3>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <h6 class="font-weight-normal mt-0">UV Index</h6>
+                        </div>
+                        <h3 class="fw-bolder m-0">
+                          {{ report.uv }} <sup></sup>
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <h6 class="font-weight-normal mt-0">Pressure</h6>
+                        </div>
+                        <h3 class="fw-bolder m-0">
+                          {{ report.pressure_mb }} mb
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="col-lg-6 py-2">
+                    <div
+                      class="card reportCard"
+                      [ngClass]="report.is_day ? 'daycity' : 'nightcity'"
+                    >
+                      <div
+                        class="card-body d-flex justify-content-center align-items-center"
+                      >
+                        <h6 class="opacity-1 font-weight-normal mt-0">
+                          {{ location.name }},{{ location.region }},{{
+                            location.country
+                          }}
+                        </h6>
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <!-- <div class="col-lg-10 py-2">
+                    <div class="card reportCard airQuality">
+                      <div class="card-body">
+                        <app-air-quality
+                          [airQuality]="report.air_quality"
+                        ></app-air-quality>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="row py-3">
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Sunrise</h6>
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <img
+                            _ngcontent-hvi-c48=""
+                            src="https://img.icons8.com/plasticine/100/000000/sunrise.png"
+                            width="20"
+                            height="20"
+                            class="img-fluid"
+                            alt="sunrise"
+                          />
+                          <h6 class="m-0 ms-3">{{ astro.sunrise }}</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Sunset</h6>
+                        <div
+                          class="d-flex justify-content-between align-items-center mt-3"
+                        >
+                          <img
+                            _ngcontent-hvi-c48=""
+                            src="https://img.icons8.com/plasticine/100/000000/sunset.png"
+                            width="20"
+                            height="20"
+                            class="img-fluid"
+                            alt="sunset"
+                          />
+                          <h6 class="m-0 ms-3">{{ astro.sunset }}</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Wind</h6>
+                        <div
+                          class="d-flex justify-content-between align-items-center mt-3"
+                        >
+                          <h6 class="m-0">{{ report.wind_kph }} kph</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 pb-2">
+                    <div class="card reportCard">
+                      <div class="card-body">
+                        <h6 class="font-weight-normal mt-0">Cloud Cover</h6>
+                        <div
+                          class="d-flex justify-content-between align-items-center mt-3"
+                        >
+                          <h6 class="m-0">{{ report.cloud }} %</h6>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="row mt-3">
+            <div class="col-lg-12">
+              <h5 class="card-title heading-font">Hourly Forecast</h5>
+              <div class="owl-carousel owl-theme">
+                <div class="item">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-center">
+                        <img src="" width="50" height="50" />
+                      </div>
+    
+                      <div class="text-center">
+                        <h5 class="mb-3"></h5>
+    
+                        <h6 class="text-muted font-weight-normal mt-0">
+                          Temperature
+                        </h6>
+                        <h5 class="mb-3"></h5>
+                        <h6 class="text-muted font-weight-normal mt-0">
+                          RealFeelTemperature
+                        </h6>
+                        <h5 class="mb-3"></h5>
+                        <h6 class="text-muted font-weight-normal mt-0">
+                          Chance of rain
+                        </h6>
+                        <h5 class="mb-3"></h5>
+                        <h6 class="text-muted font-weight-normal mt-0">Humidity</h6>
+                        <h5 class="mb-3"></h5>
+                        <h6 class="text-muted font-weight-normal mt-0">Wind</h6>
+                        <h5 class="mb-3">kph</h5>
+                        <h6 class="text-muted font-weight-normal mt-0">
+                          CloudCover
+                        </h6>
+                        <h5 class="mb-3">%</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </ng-container>
+    <div class="col-lg-12 forecastHead" *ngIf="(forecast | json) != '{}'">
+      <h3 class="fw-bolder">5-day Forecast</h3>
       <div class="unitChange">
         <button
-          class="btn"
-          [ngClass]="tempUnitType == 'F' ? 'selected' : ''"
+          class="btn btn-icon rounded-circle"
+          [ngClass]="tempUnitType == 'F' ? 'btn-dark' : 'btn-light'"
           (click)="changeTempUnitType('F')"
         >
           &#8457;
         </button>
         <button
-          class="btn"
-          [ngClass]="tempUnitType == 'C' ? 'selected' : ''"
+          class="btn btn-icon rounded-circle"
+          [ngClass]="tempUnitType == 'C' ? 'btn-dark' : 'btn-light'"
           (click)="changeTempUnitType('C')"
         >
           &#8451;
@@ -21,12 +286,15 @@
     </div>
     <div class="col-lg-12 forecastReport">
       <ng-container *ngIf="forecast">
-        <div class="row justify-content-between align-items-center ">
+        <div class="row justify-content-between align-items-center">
           <ng-container
             *ngFor="let data of forecast.DailyForecasts; let i = index"
           >
             <div class="col-md-2">
-              <div class="card forecastCard" [ngClass]="{ active: i == 0 }">
+              <div
+                class="card forecastCard"
+                [ngClass]="{ 'active bg-primary text-white': i == 0 }"
+              >
                 <div class="card-body">
                   <h5 class="fw-bolder mb-3">
                     {{ getDayFromDate(data.Date.toString()) }}
@@ -93,245 +361,4 @@
       </ng-container>
     </div>
   </div>
-  <ng-container>
-    <div class="row pt-5">
-      <div class="col-lg-12">
-        <h3 class="card-title fw-bolder mb-4">Today</h3>
-      </div>
-      <div class="col-lg-12">
-        <div class="row mb-3">
-          <div class="col-lg-3 py-2">
-            <div class="card reportCard h-100 py-3">
-              <div class="card-body">
-                <div
-                  class="d-flex justify-content-center align-items-center flex-column"
-                >
-                  <img
-                    src="http:{{ report.condition.icon }}"
-                    width="64"
-                    height="64"
-                    [alt]="report.condition.text"
-                  />
-                  <h3 class="fw-bolder mt-0" *ngIf="tempUnitType == 'F'">
-                    {{ report.temp_f }} &#8457;
-                  </h3>
-                  <h3 class="fw-bolder mb-3" *ngIf="tempUnitType == 'C'">
-                    {{ convertToCelcius(report.temp_f) | number : "0.0-0" }}
-                    &#8451;
-                  </h3>
-
-                  <h6 class="mt-3 mb-3">
-                    {{ location.localtime | date : "longDate" }}
-                    {{ location.localtime | date : "shortTime" }}
-                  </h6>
-                  <hr class="border-top text-dark" />
-                </div>
-                <div
-                  class="d-flex justify-content-center align-items-center flex-row mt-3"
-                >
-                  <img
-                    src="http:{{ report.condition.icon }}"
-                    width="30"
-                    height="30"
-                    [alt]="report.condition.text"
-                  />
-                  <p class="m-0 ms-1">{{ report.condition.text }}</p>
-                </div>
-                <p class="text-center pt-3">{{ forecast.Headline.Text }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-9 py-2">
-            <div class="row">
-              <div class="col-lg-3 py-2">
-                <div class="card reportCard">
-                  <div class="card-body px-4">
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <h6 class="text-grey font-weight-normal mt-0">
-                        Wind status
-                      </h6>
-                    </div>
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-4"
-                    >
-                      <div>
-                        <h6 class="mt-3 mb-3">
-                          <i class="fa-solid fa-location-arrow me-2"></i>
-                          {{ report.wind_dir }}
-                        </h6>
-                        <h6 class="mt-3 mb-3">
-                          <i class="fa-solid fa-wind me-2"></i>
-                          {{ report.wind_kph }} kph
-                        </h6>
-                      </div>
-                      <div class="circle">
-                        <i
-                          class="fa-solid fa-arrow-up compass"
-                          [ngStyle]="{
-                            transform: 'rotate( ' + report.wind_degree + 'deg)'
-                          }"
-                        ></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-3 py-2">
-                <div class="card reportCard">
-                  <div class="card-body">
-                    <h6 class="text-grey font-weight-normal mt-0">
-                      Sunrise & Sunset
-                    </h6>
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <img
-                        _ngcontent-hvi-c48=""
-                        src="https://img.icons8.com/plasticine/100/000000/sunrise.png"
-                        width="50"
-                        height="50"
-                        class="img-fluid"
-                        alt="sunrise"
-                      />
-                      <h6 class="m-0 ms-3">{{ astro.sunrise }}</h6>
-                    </div>
-                    <div
-                      class="d-flex justify-content-between align-items-center mt-3"
-                    >
-                      <img
-                        _ngcontent-hvi-c48=""
-                        src="https://img.icons8.com/plasticine/100/000000/sunset.png"
-                        width="50"
-                        height="50"
-                        class="img-fluid"
-                        alt="sunset"
-                      />
-                      <h6 class="m-0 ms-3">{{ astro.sunset }}</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-6 py-2">
-                <div class="card reportCard airQuality">
-                  <div class="card-body">
-                    <app-air-quality
-                      [airQuality]="report.air_quality"
-                    ></app-air-quality>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-6 py-2">
-                <div
-                  class="card reportCard"
-                  [ngClass]="report.is_day ? 'daycity' : 'nightcity'"
-                >
-                  <div
-                    class="card-body d-flex justify-content-center align-items-center"
-                  >
-                    <h6 class="opacity-1 font-weight-normal mt-0">
-                      {{ location.name }},{{ location.region }},{{
-                        location.country
-                      }}
-                    </h6>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-2 py-2">
-                <div class="card reportCard">
-                  <div class="card-body">
-                    <h6 class="text-grey font-weight-normal mt-0">Humidity</h6>
-                    <h1 class="fw-bolder m-0 mt-4">
-                      {{ report.humidity }} <sup>%</sup>
-                    </h1>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-2 py-2">
-                <div class="card reportCard">
-                  <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <h6 class="text-grey font-weight-normal mt-0">
-                        UV Index
-                      </h6>
-                    </div>
-                    <h1 class="fw-bolder m-0 mt-4">
-                      {{ report.uv }} <sup></sup>
-                    </h1>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-2 py-2">
-                <div class="card reportCard">
-                  <div class="card-body">
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <h6 class="text-grey font-weight-normal mt-0">
-                        UV Index
-                      </h6>
-                    </div>
-                    <h1 class="fw-bolder m-0 mt-4">
-                      {{ report.uv }} <sup></sup>
-                    </h1>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- <div class="row mt-3">
-        <div class="col-lg-12">
-          <h5 class="card-title heading-font">Hourly Forecast</h5>
-          <div class="owl-carousel owl-theme">
-            <div class="item">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-center">
-                    <img src="" width="50" height="50" />
-                  </div>
-
-                  <div class="text-center">
-                    <h5 class="mb-3"></h5>
-
-                    <h6 class="text-muted font-weight-normal mt-0">
-                      Temperature
-                    </h6>
-                    <h5 class="mb-3"></h5>
-                    <h6 class="text-muted font-weight-normal mt-0">
-                      RealFeelTemperature
-                    </h6>
-                    <h5 class="mb-3"></h5>
-                    <h6 class="text-muted font-weight-normal mt-0">
-                      Chance of rain
-                    </h6>
-                    <h5 class="mb-3"></h5>
-                    <h6 class="text-muted font-weight-normal mt-0">Humidity</h6>
-                    <h5 class="mb-3"></h5>
-                    <h6 class="text-muted font-weight-normal mt-0">Wind</h6>
-                    <h5 class="mb-3">kph</h5>
-                    <h6 class="text-muted font-weight-normal mt-0">
-                      CloudCover
-                    </h6>
-                    <h5 class="mb-3">%</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-    </div>
-  </ng-container>
 </div>

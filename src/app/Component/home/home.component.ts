@@ -1,8 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, map, merge, Observable, of, Subscription } from 'rxjs';
 import { Forecast } from 'src/app/Model/forecast';
 import {
   Astro,
+  CityDetail,
   Current,
   Forecasts,
   Location,
@@ -17,74 +19,64 @@ import { WeatherService } from 'src/app/Service/weather.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  onlineEvent!: Observable<Event>;
-  offlineEvent!: Observable<Event>;
   subscriptions: Subscription[] = [];
-
-  constructor(private service: WeatherService) {
-    this.onlineEvent = fromEvent(window, 'online');
-    this.offlineEvent = fromEvent(window, 'offline');
-
-    this.subscriptions.push(
-      this.onlineEvent.subscribe((e) => {
-        console.log('Online...');
-        this.getLocation();
-      })
-    );
-
-    this.subscriptions.push(
-      this.offlineEvent.subscribe((e) => {
-        console.log('Offline...');
-        this.loadData = false;
-        this.astro = {} as Astro;
-        this.currentData = {} as Current;
-        this.forecastData = {} as Forecast;
-        this.location = {} as Location;
-      })
-    );
-  }
-
-  ngOnInit(): void {
-    this.getLocation();
-  }
-
   loadData: boolean = true;
-
   astro = {} as Astro;
   currentData = {} as Current;
   forecastData = {} as Forecast;
   location = {} as Location;
   cityName: string = '';
+  cityDetails: CityDetail[] = [];
+  cityDetail: CityDetail = {} as CityDetail;
 
-  onClick(): void {
-    this.getWeatherDataByCityName(this.cityName);
+  constructor(private service: WeatherService) {
   }
 
-  getWeatherDataByCityName(city: string) {
+  ngOnInit(): void {
     this.loadData = true;
-    if (city != '') {
-      this.service.getWeatherByCityName(city).subscribe({
-        next: (response: Weather[]) => {
-          this.cityName = '';
-          this.getForecastData(response[0].Key);
+    this.subscriptions.push(
+      this.service.currentCitySubject.subscribe({
+        next: (response: CityDetail) => {
+          console.log(response);
+          this.cityDetail = response;
+          this.getWeatherByOpenApi(response.lat, response.lon);
         },
-      });
-
-      this.service.getWeatherReport(city, 5).subscribe({
+      })
+    );
+    this.subscriptions.push(
+      this.service.savedCitiesSubject.subscribe({
+        next: (response: CityDetail[]) => {
+          this.cityDetails = response;
+        },
+      })
+    );
+    this.subscriptions.push(
+      this.service.weatherSubject.subscribe({
         next: (response: WeatherReport) => {
           this.currentData = response.current;
           this.location = response.location;
           this.astro = response.forecast.forecastday[0].astro;
         },
-      });
+      })
+    );
+  }
+
+  searchCity(): void {
+    if(this.cityName !== ''){
+      this.getWeatherDataByCityName(this.cityName);
     }
   }
 
+  /**
+   * Get geolocation using navigator
+   */
   getLocation() {
+    this.loadData = true;
     if (!navigator.onLine) {
       window.alert('Connect to internet');
       this.loadData = false;
     }
+
     if (navigator.geolocation) {
       console.log(navigator.geolocation);
       navigator.geolocation.getCurrentPosition(
@@ -92,7 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           const { latitude, longitude } = position.coords;
           console.log(position.coords);
           this.getWeatherByOpenApi(latitude, longitude);
-          this.getGeoLocationData(latitude, longitude);
+          // this.getGeoLocationData(latitude, longitude);
         },
         (err) => {
           console.error(err);
@@ -103,33 +95,44 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * get weather details using lat and long
+   * @param latitude
+   * @param longitude
+   */
   getWeatherByOpenApi(latitude: number, longitude: number) {
+    this.loadData = true;
     this.service.getWeatherByGeoPosition(latitude, longitude, 3).subscribe({
       next: (response: WeatherReport) => {
-        console.log(response);
-        this.currentData = response.current;
-        this.location = response.location;
-        this.astro = response.forecast.forecastday[0].astro;
+        if (this.service.checkCitySaved(response.location.name) > -1) {
+          response.location.added = true;
+        } else {
+          response.location.added = false;
+        }
+        let city: CityDetail = {
+          added: response.location.added,
+          name: response.location.name,
+          lat: response.location.lat,
+          lon: response.location.lon,
+        };
+        console.log(city)
+        this.service.weatherSubject.next(response);
+        this.cityDetail = city;
+        this.loadData = false;
       },
     });
   }
 
+  /**
+   *
+   * @param latitude
+   * @param longitude
+   */
   getGeoLocationData(latitude: number, longitude: number) {
+    this.loadData = true;
     this.service.getGeoLocationData(latitude, longitude).subscribe({
       next: (response: Weather) => {
-        this.getForecastData(response.Key);
-      },
-      error: (err) => {
-        console.log(err);
-      },
-    });
-  }
-
-  getForecastData(key: string) {
-    this.service.getForecastData(key).subscribe({
-      next: (response: Forecast) => {
-        console.log(response);
-        this.forecastData = response;
+        // this.getForecastData(response.Key);
         this.loadData = false;
       },
       error: (err) => {
@@ -138,7 +141,60 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * get 5-day forecast details of geolocation
+   * @param key
+   */
+  // getForecastData(key: string) {
+  //   this.service.getForecastData(key).subscribe({
+  //     next: (response: Forecast) => {
+  //       console.log(response);
+  //       this.forecastData = response;
+  //       this.loadData = false;
+  //     },
+  //     error: (err) => {
+  //       console.log(err);
+  //     },
+  //   });
+  // }
+
+  /**
+   * @description search and get weather details by city name
+   * @param city
+   */
+  getWeatherDataByCityName(city: string) {
+    this.loadData = true;
+    if (city != '') {
+      // this.service.getWeatherByCityName(city).subscribe({
+      //   next: (response: Weather[]) => {
+      //     this.cityName = '';
+      //     // this.getForecastData(response[0].Key);
+      //   },
+      // });
+
+      this.service.getWeatherReport(city, 5).subscribe({
+        next: (response: WeatherReport) => {
+          this.cityName = '';
+          this.cityDetail = {
+            added: response.location.added,
+            name: response.location.name,
+            lat: response.location.lat,
+            lon: response.location.lon,
+          };
+          this.service.weatherSubject.next(response);
+          this.service.currentCitySubject.next(this.cityDetail);
+          this.loadData = false;
+        },
+        error:(err:HttpErrorResponse)=>{
+          alert(err.error.error.message);
+          this.cityName = ''
+          this.loadData = false;
+        }
+      });
+    }
+  }
+
   ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.subscriptions.forEach((x) => x.unsubscribe());
   }
 }

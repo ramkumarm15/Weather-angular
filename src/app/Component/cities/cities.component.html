@@ -1,0 +1,28 @@
+<ng-container *ngIf="!loadData else loadBlock">
+  <div class="dropdown">
+    <button
+      class="btn btn-secondary dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Saved Cities
+    </button>
+    <ul class="dropdown-menu">
+      <ng-container *ngIf="cityDetailss.length !== 0">
+        <li *ngFor="let city of cityDetailss">
+          <a class="dropdown-item" (click)="loadCityData(city)"
+            >{{ city.name }}
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</ng-container>
+<ng-template #loadBlock>
+  <button type="button" class="btn btn-secondary pe-none">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+    </span>
+    <span class="ms-2">Loading...</span>
+  </button>
+</ng-template>

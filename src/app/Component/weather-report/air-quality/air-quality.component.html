@@ -1,4 +1,4 @@
-<h6 class="text-grey font-weight-normal mt-0">
+<h6 class=" font-weight-normal mt-0">
   Air Quality Index
   <span
     class="float-end fs-6"
@@ -17,12 +17,13 @@
         getIndexLevel(data.indexName, airQuality[data.indexName]) + 'IndexLevel'
       "
       [style.width]="'4rem'"
+      [style.fontSize]="'0.85rem'"
     >
       <span class="mb-2">
         {{ data.name }}<sub>{{ data.subStr }}</sub>
       </span>
       <span class="mb-2">{{ airQuality[data.indexName] | number }}</span>
-      <span class="mb-2">
+      <span class="mb-2 text-truncate">
         {{
           getIndexLevel(data.indexName, airQuality[data.indexName]) | titlecase
         }}

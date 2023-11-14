@@ -9,13 +9,15 @@ import { WeatherReportComponent } from './Component/weather-report/weather-repor
 import { FormsModule } from '@angular/forms';
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { AirQualityComponent } from './Component/weather-report/air-quality/air-quality.component';
+import { CitiesComponent } from './Component/cities/cities.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     WeatherReportComponent,
-    AirQualityComponent
+    AirQualityComponent,
+    CitiesComponent
   ],
   imports: [
     BrowserModule,
